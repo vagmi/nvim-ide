@@ -29,6 +29,11 @@ RUN echo "dev ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 USER dev
 
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+RUN bash -l -i -c "rustup install stable"
+
+
+
 WORKDIR /home/dev
 RUN bash -l -i -c "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | bash"
 RUN bash -l -i -c "source ~/.nvm/nvm.sh && nvm ls-remote && nvm install v18.12.1"
