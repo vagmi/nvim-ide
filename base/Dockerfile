@@ -24,17 +24,13 @@ RUN cd /root/TMP/neovim && git checkout stable && make -j8 && make install
 RUN rm -rf /root/TMP
 RUN curl -sS https://starship.rs/install.sh | sudo sh -s - --yes
 
-RUN groupadd -r dev && useradd -m -r -g dev -s /usr/bin/zsh dev
-RUN echo "dev ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-
-USER dev
 
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 RUN bash -l -i -c "rustup install stable"
 
 
 
-WORKDIR /home/dev
+# WORKDIR /home/dev
 RUN bash -l -i -c "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | bash"
 RUN bash -l -i -c "source ~/.nvm/nvm.sh && nvm ls-remote && nvm install v18.12.1"
 RUN bash -l -i -c "source ~/.nvm/nvm.sh && npm i -g neovim"
@@ -43,13 +39,14 @@ RUN pip3 install pynvim
 
 RUN bash -l -i -c "git clone --depth 1 https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/start/packer.nvim"
 
-RUN mkdir -p /home/dev/.config/nvim/lua
-COPY --chown=dev:dev ./config/nvim /home/dev/.config/nvim/
-COPY --chown=dev:dev ./config/zshrc /home/dev/.zshrc
-COPY --chown=dev:dev ./config/starship.toml /home/dev/.config/starship.toml
+
+RUN mkdir -p /root/.config/nvim/lua
+COPY ./config/nvim /root/.config/nvim/
+COPY ./config/zshrc /root/.zshrc
+COPY ./config/starship.toml /root/.config/starship.toml
 
 RUN bash -l -i -c "nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync' > /dev/null || echo done"
 
-COPY --chown=dev:dev ./config/nvim-after /home/dev/.config/nvim/after
+COPY ./config/nvim-after /root/.config/nvim/after
 
 CMD ["/usr/bin/zsh", "--login"]
