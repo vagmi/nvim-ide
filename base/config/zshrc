@@ -6,3 +6,5 @@ alias vim=`which nvim`
 export EDITOR=vim
 eval "$(direnv hook zsh)"
 eval "$(starship init zsh)"
+
+export PATH=$PATH:/usr/local/go/bin

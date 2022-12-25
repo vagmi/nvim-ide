@@ -14,7 +14,7 @@ RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get -y install curl fzf ripgrep tree git \
 	xclip python3 python3-pip silversearcher-ag \
 	tzdata ninja-build gettext libtool libtool-bin zsh direnv \
-	cmake build-essential zip unzip sudo pkg-config automake
+	cmake build-essential zip unzip sudo pkg-config automake wget
 
 
 # Install Neovim from source.
@@ -28,9 +28,10 @@ RUN curl -sS https://starship.rs/install.sh | sudo sh -s - --yes
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 RUN bash -l -i -c "rustup install stable"
 
+RUN mkdir -p /root/sources &&  cd /root/sources && wget https://go.dev/dl/go1.19.4.linux-amd64.tar.gz
+RUN rm -rf /usr/local/go && tar -C /usr/local -xzf /root/sources/go1.19.4.linux-amd64.tar.gz && rm -rf /root/sources
 
-
-# WORKDIR /home/dev
+WORKDIR /root
 RUN bash -l -i -c "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | bash"
 RUN bash -l -i -c "source ~/.nvm/nvm.sh && nvm ls-remote && nvm install v18.12.1"
 RUN bash -l -i -c "source ~/.nvm/nvm.sh && npm i -g neovim"
@@ -39,6 +40,8 @@ RUN pip3 install pynvim
 
 RUN bash -l -i -c "git clone --depth 1 https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/start/packer.nvim"
 
+COPY ./install-go-tools.sh /root/install-go-tools.sh
+RUN ./install-go-tools.sh
 
 RUN mkdir -p /root/.config/nvim/lua
 COPY ./config/nvim /root/.config/nvim/
