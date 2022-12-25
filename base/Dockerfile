@@ -12,7 +12,7 @@ RUN apt-get update --fix-missing && apt-get install -y software-properties-commo
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get -y install curl fzf ripgrep tree git \
-	xclip python3 python3-pip silversearcher-ag \
+	xclip python3 python3-pip silversearcher-ag htop \
 	tzdata ninja-build gettext libtool libtool-bin zsh direnv \
 	cmake build-essential zip unzip sudo pkg-config automake wget
 
@@ -24,13 +24,31 @@ RUN cd /root/TMP/neovim && git checkout stable && make -j8 && make install
 RUN rm -rf /root/TMP
 RUN curl -sS https://starship.rs/install.sh | sudo sh -s - --yes
 
+# Install Java
+ENV JAVA_HOME /opt/java/openjdk
+ENV PATH $JAVA_HOME/bin:$PATH
+ENV JAVA_VERSION jdk-17.0.5+8
+RUN mkdir -p /opt/java/openjdk && \
+    wget -O /tmp/openjdk.tar.gz https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.5%2B8/OpenJDK17U-jdk_x64_linux_hotspot_17.0.5_8.tar.gz && \
+    tar --extract \
+	      --file /tmp/openjdk.tar.gz \
+	      --directory "$JAVA_HOME" \
+	      --strip-components 1 \
+	      --no-same-owner && \
+    rm /tmp/openjdk.tar.gz
+RUN find "$JAVA_HOME/lib" -name '*.so' -exec dirname '{}' ';' | sort -u > /etc/ld.so.conf.d/docker-openjdk.conf && \
+    ldconfig && \
+    java -Xshare:dump
 
+# Install Rust
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 RUN bash -l -i -c "rustup install stable"
 
+# Install Go
 RUN mkdir -p /root/sources &&  cd /root/sources && wget https://go.dev/dl/go1.19.4.linux-amd64.tar.gz
 RUN rm -rf /usr/local/go && tar -C /usr/local -xzf /root/sources/go1.19.4.linux-amd64.tar.gz && rm -rf /root/sources
 
+# Install Node
 WORKDIR /root
 RUN bash -l -i -c "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | bash"
 RUN bash -l -i -c "source ~/.nvm/nvm.sh && nvm ls-remote && nvm install v18.12.1"
