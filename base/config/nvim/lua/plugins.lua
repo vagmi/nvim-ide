@@ -10,7 +10,7 @@ return require('packer').startup(function()
   use 'leafgarland/typescript-vim'
   use 'peitalin/vim-jsx-typescript'
   use 'mbbill/undotree'
-  use 'folke/tokyonight.nvim'
+  use 'rafamadriz/neon' 
   use 'fatih/vim-go'
   use 'nvim-treesitter/nvim-treesitter' 
   use 'tpope/vim-commentary'
@@ -47,6 +47,7 @@ return require('packer').startup(function()
     {'saadparwaiz1/cmp_luasnip'},
     {'hrsh7th/cmp-nvim-lsp'},
     {'hrsh7th/cmp-nvim-lua'},
+    {'simrat39/inlay-hints.nvim'},
 
     -- Snippets
     {'L3MON4D3/LuaSnip'},

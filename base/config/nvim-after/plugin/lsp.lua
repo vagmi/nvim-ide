@@ -22,6 +22,7 @@ lsp.configure('sumneko_lua', {
 
 
 local cmp = require('cmp')
+local ih = require('inlay-hints')
 local cmp_select = {behavior = cmp.SelectBehavior.Select}
 local cmp_mappings = lsp.defaults.cmp_mappings({
   ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
@@ -51,7 +52,7 @@ lsp.set_preferences({
 
 lsp.on_attach(function(client, bufnr)
   local opts = {buffer = bufnr, remap = false}
-
+  ih.on_attach(client, bufnr)
   if client.name == "eslint" then
       vim.cmd.LspStop('eslint')
       return
@@ -69,6 +70,7 @@ lsp.on_attach(function(client, bufnr)
   vim.keymap.set("i", "<C-h>", vim.lsp.buf.signature_help, opts)
 end)
 
+ih.setup()
 lsp.setup()
 
 vim.diagnostic.config({
