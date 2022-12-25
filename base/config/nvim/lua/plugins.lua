@@ -39,6 +39,7 @@ return require('packer').startup(function()
     {'neovim/nvim-lspconfig'},
     {'williamboman/mason.nvim'},
     {'williamboman/mason-lspconfig.nvim'},
+    {'arkav/lualine-lsp-progress'}, -- show progress
 
     -- Autocompletion
     {'hrsh7th/nvim-cmp'},

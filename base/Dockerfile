@@ -39,6 +39,8 @@ RUN mkdir -p /opt/java/openjdk && \
 RUN find "$JAVA_HOME/lib" -name '*.so' -exec dirname '{}' ';' | sort -u > /etc/ld.so.conf.d/docker-openjdk.conf && \
     ldconfig && \
     java -Xshare:dump
+RUN curl -s "https://get.sdkman.io" | bash
+RUN bash -l -c 'source "$HOME/.sdkman/bin/sdkman-init.sh" && sdk install gradle 7.6'
 
 # Install Rust
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
@@ -58,8 +60,10 @@ RUN pip3 install pynvim
 
 RUN bash -l -i -c "git clone --depth 1 https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/start/packer.nvim"
 
-COPY ./install-go-tools.sh /root/install-go-tools.sh
-RUN ./install-go-tools.sh
+COPY ./install-go-tools.sh /opt/tools/install-go-tools.sh
+RUN /opt/tools/install-go-tools.sh
+
+RUN git clone https://github.com/rupa/z.git /opt/tools/z
 
 RUN mkdir -p /root/.config/nvim/lua
 COPY ./config/nvim /root/.config/nvim/
@@ -69,5 +73,6 @@ COPY ./config/starship.toml /root/.config/starship.toml
 RUN bash -l -i -c "nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync' > /dev/null || echo done"
 
 COPY ./config/nvim-after /root/.config/nvim/after
+RUN bash -l -i -c "nvim --headless -c 'MasonInstall rust-analyzer' -c 'sleep 20' -c qall  > /dev/null || echo done"
 
 CMD ["/usr/bin/zsh", "--login"]

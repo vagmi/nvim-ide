@@ -1,3 +1,8 @@
 require('lualine').setup({
-    theme = 'neon'
+    theme = 'neon',
+    sections = {
+        lualine_c = {
+            'lsp_progress',
+        },
+    },
 })

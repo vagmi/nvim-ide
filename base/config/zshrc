@@ -1,10 +1,14 @@
-source $HOME/.cargo/env
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 alias vim=`which nvim`
-export EDITOR=vim
-export JAVA_HOME=jdk-17.0.5+8
+export EDITOR=`which nvim`
+export JAVA_HOME=/opt/java/openjdk
+
+source $HOME/.cargo/env
+source /opt/tools/z/z.sh
+source $HOME/.sdkman/bin/sdkman-init.sh
+
 eval "$(direnv hook zsh)"
 eval "$(starship init zsh)"
 
