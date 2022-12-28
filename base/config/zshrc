@@ -11,5 +11,6 @@ source $HOME/.sdkman/bin/sdkman-init.sh
 
 eval "$(direnv hook zsh)"
 eval "$(starship init zsh)"
+eval "$($HOME/.rbenv/bin/rbenv init - zsh)"
 
 export PATH=$PATH:$JAVA_HOME/bin:/usr/local/go/bin

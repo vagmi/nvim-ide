@@ -12,7 +12,7 @@ RUN apt-get update --fix-missing && apt-get install -y software-properties-commo
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get -y install curl fzf ripgrep tree git \
-	xclip python3 python3-pip silversearcher-ag htop \
+	xclip python3 python3-pip silversearcher-ag htop libssl3 libssl-dev \
 	tzdata ninja-build gettext libtool libtool-bin zsh direnv \
 	cmake build-essential zip unzip sudo pkg-config automake wget
 
@@ -56,6 +56,10 @@ RUN bash -l -i -c "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2
 RUN bash -l -i -c "source ~/.nvm/nvm.sh && nvm ls-remote && nvm install v18.12.1"
 RUN bash -l -i -c "source ~/.nvm/nvm.sh && npm i -g neovim"
 
+# Install Ruby
+COPY ./install-ruby.sh /opt/tools/install-ruby.sh
+RUN /opt/tools/install-ruby.sh
+
 RUN pip3 install pynvim
 
 RUN bash -l -i -c "git clone --depth 1 https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/start/packer.nvim"
@@ -73,6 +77,6 @@ COPY ./config/starship.toml /root/.config/starship.toml
 RUN bash -l -i -c "nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync' > /dev/null || echo done"
 
 COPY ./config/nvim-after /root/.config/nvim/after
-RUN bash -l -i -c "nvim --headless -c 'MasonInstall rust-analyzer' -c 'sleep 20' -c qall  > /dev/null || echo done"
+RUN zsh -l -i -c "nvim --headless -c 'MasonInstall rust-analyzer' -c 'sleep 20' -c qall  > /dev/null || echo done"
 
 CMD ["/usr/bin/zsh", "--login"]

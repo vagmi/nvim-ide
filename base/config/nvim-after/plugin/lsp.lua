@@ -7,7 +7,8 @@ lsp.ensure_installed({
   'eslint',
   'sumneko_lua',
   'rust_analyzer',
-  'kotlin_language_server'
+  'kotlin_language_server',
+  'solargraph'
 })
 
 -- Fix Undefined global 'vim'
