@@ -20,7 +20,7 @@ RUN apt-get update && \
 # Install Neovim from source.
 RUN mkdir -p /root/TMP
 RUN cd /root/TMP && git clone https://github.com/neovim/neovim
-RUN cd /root/TMP/neovim && git checkout stable && make -j8 && make install
+RUN cd /root/TMP/neovim && git checkout stable && CMAKE_BUILD_TYPE=Release make -j8 && make install
 RUN rm -rf /root/TMP
 RUN curl -sS https://starship.rs/install.sh | sudo sh -s - --yes
 
