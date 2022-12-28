@@ -8,14 +8,19 @@ ENV LANGUAGE en_US:en
 ENV TZ=America/Halifax
 
 RUN apt-get update --fix-missing && apt-get install -y software-properties-common
+ARG GITHUB_HANDLE=vagmi
 
+EXPOSE 22
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get -y install curl fzf ripgrep tree git \
 	xclip python3 python3-pip silversearcher-ag htop libssl3 libssl-dev \
-	tzdata ninja-build gettext libtool libtool-bin zsh direnv \
+	tzdata ninja-build gettext libtool libtool-bin zsh direnv openssh-server \
 	cmake build-essential zip unzip sudo pkg-config automake wget
 
+RUN chsh -s /usr/bin/zsh
+RUN mkdir /var/run/sshd
+RUN mkdir -p /root/.ssh && curl https://github.com/$GITHUB_HANDLE.keys -o /root/.ssh/authorized_keys && chmod 600 /root/.ssh/authorized_keys
 
 # Install Neovim from source.
 RUN mkdir -p /root/TMP
@@ -79,4 +84,4 @@ RUN bash -l -i -c "nvim --headless -c 'autocmd User PackerComplete quitall' -c '
 COPY ./config/nvim-after /root/.config/nvim/after
 RUN zsh -l -i -c "nvim --headless -c 'MasonInstall rust-analyzer' -c 'sleep 20' -c qall  > /dev/null || echo done"
 
-CMD ["/usr/bin/zsh", "--login"]
+CMD ["/usr/sbin/sshd", "-D"]
