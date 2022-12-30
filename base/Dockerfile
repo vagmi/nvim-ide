@@ -30,21 +30,8 @@ RUN rm -rf /root/TMP
 RUN curl -sS https://starship.rs/install.sh | sudo sh -s - --yes
 
 # Install Java
-ENV JAVA_HOME /opt/java/openjdk
-ENV PATH $JAVA_HOME/bin:$PATH
-ENV JAVA_VERSION jdk-17.0.5+8
-RUN mkdir -p /opt/java/openjdk && \
-    wget -O /tmp/openjdk.tar.gz https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.5%2B8/OpenJDK17U-jdk_x64_linux_hotspot_17.0.5_8.tar.gz && \
-    tar --extract \
-	      --file /tmp/openjdk.tar.gz \
-	      --directory "$JAVA_HOME" \
-	      --strip-components 1 \
-	      --no-same-owner && \
-    rm /tmp/openjdk.tar.gz
-RUN find "$JAVA_HOME/lib" -name '*.so' -exec dirname '{}' ';' | sort -u > /etc/ld.so.conf.d/docker-openjdk.conf && \
-    ldconfig && \
-    java -Xshare:dump
 RUN curl -s "https://get.sdkman.io" | bash
+RUN bash -l -c 'source "$HOME/.sdkman/bin/sdkman-init.sh" && sdk install java'
 RUN bash -l -c 'source "$HOME/.sdkman/bin/sdkman-init.sh" && sdk install gradle 7.6'
 
 # Install Rust

@@ -3,7 +3,6 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 alias vim=`which nvim`
 export EDITOR=`which nvim`
-export JAVA_HOME=/opt/java/openjdk
 
 source $HOME/.cargo/env
 source /opt/tools/z/z.sh
