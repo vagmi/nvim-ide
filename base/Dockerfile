@@ -84,4 +84,6 @@ RUN bash -l -i -c "nvim --headless -c 'autocmd User PackerComplete quitall' -c '
 COPY ./config/nvim-after /root/.config/nvim/after
 RUN zsh -l -i -c "nvim --headless -c 'MasonInstall rust-analyzer' -c 'sleep 20' -c qall  > /dev/null || echo done"
 
+VOLUME /root/work
+
 CMD ["/usr/sbin/sshd", "-D"]
